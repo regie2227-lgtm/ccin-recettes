@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCIN - Recettes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .form-section, .recettes-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #recettesList {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .recette-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: 0.3s;
+        }
+
+        .recette-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .recette-card h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+        }
+
+        .recette-card p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .recette-card strong {
+            color: #333;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        #recettesList::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #recettesList::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #recettesList::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        #recettesList::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        .loading {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+
+        .error {
+            background: #ffe0e0;
+            color: #c00;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #c00;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .form-section, .recettes-section {
+                padding: 20px;
+            }
+
+            #recettesList {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🍳 CCIN - Recettes</h1>
+    
+    <div class="container">
+        <div class="form-section">
+            <h2>Ajouter une recette</h2>
+            <div id="errorMessage"></div>
+            <form id="recetteForm">
+                <input type="text" id="nom" placeholder="Nom de la recette" required>
+                <textarea id="ingredients" placeholder="Ingrédients (séparés par des virgules)" required></textarea>
+                <textarea id="instructions" placeholder="Mode de préparation" required></textarea>
+                <input type="number" id="temps" placeholder="Temps de préparation (en minutes)" required>
+                <button type="submit">Ajouter la recette</button>
+            </form>
+        </div>
+
+        <div class="recettes-section">
+            <h2>Toutes les recettes</h2>
+            <div id="recettesList" class="loading">Chargement des recettes...</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBstC-H43LX452HLYCJQGdAwnjZJGQLcz0",
+            authDomain: "ccin-recettes.firebaseapp.com",
+            projectId: "ccin-recettes",
+            storageBucket: "ccin-recettes.firebasestorage.app",
+            messagingSenderId: "6403324807099",
+            appId: "1:6403324807099:web:e9e64684ab14adbe17702a"
+        };
+
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const recettesRef = db.collection("recettes");
+
+        // Écouter les modifications en temps réel
+        recettesRef.onSnapshot((snapshot) => {
+            afficherRecettes();
+        });
+
+        // Ajouter une recette
+        document.getElementById("recetteForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const nom = document.getElementById("nom").value;
+            const ingredients = document.getElementById("ingredients").value;
+            const instructions = document.getElementById("instructions").value;
+            const temps = document.getElementById("temps").value;
+            const errorDiv = document.getElementById("errorMessage");
+
+            try {
+                await recettesRef.add({
+                    nom: nom,
+                    ingredients: ingredients,
+                    instructions: instructions,
+                    temps: parseInt(temps),
+                    createdAt: new Date()
+                });
+                
+                // Réinitialiser le formulaire
+                document.getElementById("recetteForm").reset();
+                errorDiv.innerHTML = "";
+                console.log("Recette ajoutée avec succès !");
+            } catch (error) {
+                console.error("Erreur lors de l'ajout : ", error);
+                errorDiv.innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
+            }
+        });
+
+        // Afficher toutes les recettes
+        async function afficherRecettes() {
+            try {
+                const snapshot = await recettesRef.get();
+                const recettesList = document.getElementById("recettesList");
+                recettesList.innerHTML = "";
+
+                if (snapshot.empty) {
+                    recettesList.innerHTML = "<p style='text-align: center; color: #999;'>Aucune recette pour le moment...</p>";
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const recette = doc.data();
+                    const div = document.createElement("div");
+                    div.className = "recette-card";
+                    div.innerHTML = `
+                        <h3>${recette.nom}</h3>
+                        <p><strong>⏱️ Temps :</strong> ${recette.temps} minutes</p>
+                        <p><strong>🥘 Ingrédients :</strong></p>
+                        <p>${recette.ingredients}</p>
+                        <p><strong>📝 Instructions :</strong></p>
+                        <p>${recette.instructions}</p>
+                        <button class="btn-delete" onclick="supprimerRecette('${doc.id}')">Supprimer</button>
+                    `;
+                    recettesList.appendChild(div);
+                });
+            } catch (error) {
+                console.error("Erreur lors du chargement : ", error);
+                document.getElementById("recettesList").innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
+            }
+        }
+
+        // Supprimer une recette
+        async function supprimerRecette(id) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cette recette ?")) {
+                try {
+                    await recettesRef.doc(id).delete();
+                    console.log("Recette supprimée !");
+                } catch (error) {
+                    console.error("Erreur lors de la suppression : ", error);
+                    alert("Erreur : " + error.message);
+                }
+            }
+        }
+
+        // Afficher les recettes au chargement
+        afficherRecettes();
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCIN - Recettes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .form-section, .recettes-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #recettesList {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .recette-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: 0.3s;
+        }
+
+        .recette-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .recette-card h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+        }
+
+        .recette-card p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .recette-card strong {
+            color: #333;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        #recettesList::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #recettesList::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #recettesList::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        #recettesList::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        .loading {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+
+        .error {
+            background: #ffe0e0;
+            color: #c00;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #c00;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .form-section, .recettes-section {
+                padding: 20px;
+            }
+
+            #recettesList {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🍳 CCIN - Recettes</h1>
+    
+    <div class="container">
+        <div class="form-section">
+            <h2>Ajouter une recette</h2>
+            <div id="errorMessage"></div>
+            <form id="recetteForm">
+                <input type="text" id="nom" placeholder="Nom de la recette" required>
+                <textarea id="ingredients" placeholder="Ingrédients (séparés par des virgules)" required></textarea>
+                <textarea id="instructions" placeholder="Mode de préparation" required></textarea>
+                <input type="number" id="temps" placeholder="Temps de préparation (en minutes)" required>
+                <button type="submit">Ajouter la recette</button>
+            </form>
+        </div>
+
+        <div class="recettes-section">
+            <h2>Toutes les recettes</h2>
+            <div id="recettesList" class="loading">Chargement des recettes...</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBstC-H43LX452HLYCJQGdAwnjZJGQLcz0",
+            authDomain: "ccin-recettes.firebaseapp.com",
+            projectId: "ccin-recettes",
+            storageBucket: "ccin-recettes.firebasestorage.app",
+            messagingSenderId: "6403324807099",
+            appId: "1:6403324807099:web:e9e64684ab14adbe17702a"
+        };
+
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const recettesRef = db.collection("recettes");
+
+        // Écouter les modifications en temps réel
+        recettesRef.onSnapshot((snapshot) => {
+            afficherRecettes();
+        });
+
+        // Ajouter une recette
+        document.getElementById("recetteForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const nom = document.getElementById("nom").value;
+            const ingredients = document.getElementById("ingredients").value;
+            const instructions = document.getElementById("instructions").value;
+            const temps = document.getElementById("temps").value;
+            const errorDiv = document.getElementById("errorMessage");
+
+            try {
+                await recettesRef.add({
+                    nom: nom,
+                    ingredients: ingredients,
+                    instructions: instructions,
+                    temps: parseInt(temps),
+                    createdAt: new Date()
+                });
+                
+                // Réinitialiser le formulaire
+                document.getElementById("recetteForm").reset();
+                errorDiv.innerHTML = "";
+                console.log("Recette ajoutée avec succès !");
+            } catch (error) {
+                console.error("Erreur lors de l'ajout : ", error);
+                errorDiv.innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
+            }
+        });
+
+        // Afficher toutes les recettes
+        async function afficherRecettes() {
+            try {
+                const snapshot = await recettesRef.get();
+                const recettesList = document.getElementById("recettesList");
+                recettesList.innerHTML = "";
+
+                if (snapshot.empty) {
+                    recettesList.innerHTML = "<p style='text-align: center; color: #999;'>Aucune recette pour le moment...</p>";
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const recette = doc.data();
+                    const div = document.createElement("div");
+                    div.className = "recette-card";
+                    div.innerHTML = `
+                        <h3>${recette.nom}</h3>
+                        <p><strong>⏱️ Temps :</strong> ${recette.temps} minutes</p>
+                        <p><strong>🥘 Ingrédients :</strong></p>
+                        <p>${recette.ingredients}</p>
+                        <p><strong>📝 Instructions :</strong></p>
+                        <p>${recette.instructions}</p>
+                        <button class="btn-delete" onclick="supprimerRecette('${doc.id}')">Supprimer</button>
+                    `;
+                    recettesList.appendChild(div);
+                });
+            } catch (error) {
+                console.error("Erreur lors du chargement : ", error);
+                document.getElementById("recettesList").innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
+            }
+        }
+
+        // Supprimer une recette
+        async function supprimerRecette(id) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cette recette ?")) {
+                try {
+                    await recettesRef.doc(id).delete();
+                    console.log("Recette supprimée !");
+                } catch (error) {
+                    console.error("Erreur lors de la suppression : ", error);
+                    alert("Erreur : " + error.message);
+                }
+            }
+        }
+
+        // Afficher les recettes au chargement
+        afficherRecettes();
+    </script>
+</body>
+</html>
