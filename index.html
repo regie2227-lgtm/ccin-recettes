@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCIN - Recettes</title>
+    <title>RECETTES - CHAMBRE DE COMMERCE DU NIGER</title>
     <style>
         * {
             margin: 0;
@@ -13,217 +13,441 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
             color: #333;
         }
 
-        h1 {
+        .header {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
             text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .offline-indicator {
+            background: #ff6b6b;
             color: white;
-            margin-bottom: 40px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .offline-indicator.show {
+            display: block;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1e3c72;
+            box-shadow: 0 0 8px rgba(30, 60, 114, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(30, 60, 114, 0.4);
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
         }
 
-        .form-section, .recettes-section {
+        .hidden {
+            display: none !important;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .form-section, .list-section {
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.15);
         }
 
-        h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 1.5em;
-            border-bottom: 3px solid #667eea;
+        .form-section h2,
+        .list-section h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #2a5298;
             padding-bottom: 10px;
         }
 
-        form {
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            align-items: center;
         }
 
-        input, textarea {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1em;
-            font-family: inherit;
-            transition: 0.3s;
+        .input-group input {
+            flex: 1;
         }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        button {
+        .input-group button {
             padding: 12px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1em;
-            transition: 0.3s;
+            width: auto;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        #recettesList {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 600px;
+        .suggestions {
+            background: #f5f5f5;
+            max-height: 150px;
             overflow-y: auto;
+            border-radius: 5px;
+            margin-top: 5px;
+            display: none;
         }
 
-        .recette-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        .suggestions.show {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .suggestion-item:hover {
+            background: #e0e0e0;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
             padding: 20px;
             border-radius: 10px;
-            border-left: 5px solid #667eea;
-            transition: 0.3s;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
-        .recette-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        .stats h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
         }
 
-        .recette-card h3 {
-            color: #667eea;
-            margin-bottom: 12px;
-            font-size: 1.3em;
+        .stats .amount {
+            font-size: 2em;
+            font-weight: bold;
         }
 
-        .recette-card p {
-            margin: 10px 0;
-            line-height: 1.6;
-            color: #555;
+        .recu-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2a5298;
         }
 
-        .recette-card strong {
-            color: #333;
+        .recu-item.doublon {
+            border-left-color: #ff6b6b;
+            background: #ffe0e0;
+        }
+
+        .recu-item h4 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .recu-item p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        .recu-item .montant {
+            font-weight: bold;
+            color: #2a5298;
+            font-size: 1.1em;
+        }
+
+        .recu-item .ristourne {
+            color: #f5576c;
+            font-weight: bold;
+        }
+
+        .recu-item .doublon-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .actions button {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            flex: 1;
         }
 
         .btn-delete {
-            background: #e74c3c;
-            padding: 8px 16px;
-            font-size: 0.9em;
-            margin-top: 10px;
-            width: 100%;
+            background: #ff6b6b;
         }
 
         .btn-delete:hover {
-            background: #c0392b;
+            background: #ff5252;
         }
 
-        #recettesList::-webkit-scrollbar {
-            width: 8px;
+        .btn-logout {
+            background: #ff9800;
+            padding: 10px 20px;
+            width: auto;
+            float: right;
         }
 
-        #recettesList::-webkit-scrollbar-track {
-            background: #f1f1f1;
+        .btn-logout:hover {
+            background: #fb8c00;
+        }
+
+        .admin-panel {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            padding: 20px;
             border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
         }
 
-        #recettesList::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-
-        #recettesList::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
-
-        .loading {
-            text-align: center;
-            color: #999;
-            font-style: italic;
-        }
-
-        .error {
-            background: #ffe0e0;
-            color: #c00;
-            padding: 15px;
-            border-radius: 8px;
+        .admin-panel h3 {
             margin-bottom: 15px;
-            border-left: 4px solid #c00;
         }
 
-        @media (max-width: 768px) {
-            .container {
+        .print-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .print-section input,
+        .print-section button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .print-section input {
+            background: white;
+            color: #333;
+            flex: 1;
+        }
+
+        .print-section button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
                 grid-template-columns: 1fr;
             }
+        }
 
-            h1 {
-                font-size: 1.8em;
+        @media print {
+            body {
+                background: white;
             }
-
-            .form-section, .recettes-section {
-                padding: 20px;
-            }
-
-            #recettesList {
-                max-height: none;
+            .form-section, .btn-logout, .print-section, .admin-panel {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <h1>🍳 CCIN - Recettes</h1>
-    
-    <div class="container">
-        <div class="form-section">
-            <h2>Ajouter une recette</h2>
-            <div id="errorMessage"></div>
-            <form id="recetteForm">
-                <input type="text" id="nom" placeholder="Nom de la recette" required>
-                <textarea id="ingredients" placeholder="Ingrédients (séparés par des virgules)" required></textarea>
-                <textarea id="instructions" placeholder="Mode de préparation" required></textarea>
-                <input type="number" id="temps" placeholder="Temps de préparation (en minutes)" required>
-                <button type="submit">Ajouter la recette</button>
-            </form>
+    <!-- LOGIN -->
+    <div id="loginSection" class="login-container">
+        <h2>🏢 RECETTES</h2>
+        <h3 style="text-align: center; font-size: 0.9em; color: #666; margin-bottom: 30px;">
+            Chambre de Commerce du Niger
+        </h3>
+        <div class="form-group">
+            <label>Nom d'utilisateur</label>
+            <input type="text" id="username" placeholder="Votre nom">
+        </div>
+        <div class="form-group">
+            <label>Mot de passe</label>
+            <input type="password" id="password" placeholder="Mot de passe">
+        </div>
+        <div class="form-group">
+            <label>Rôle</label>
+            <select id="role">
+                <option value="agent">Agent de saisie</option>
+                <option value="admin">Administrateur</option>
+            </select>
+        </div>
+        <button onclick="login()">Se connecter</button>
+    </div>
+
+    <!-- APP -->
+    <div id="appSection" class="hidden">
+        <div class="header">
+            <h1>🏢 RECETTES - CHAMBRE DE COMMERCE DU NIGER</h1>
+            <p>Ristournes aux agents du MT/AC</p>
+            <div id="offlineIndicator" class="offline-indicator">
+                📡 Mode hors ligne - Les données seront synchronisées automatiquement
+            </div>
+            <button class="btn-logout" onclick="logout()">Déconnexion</button>
         </div>
 
-        <div class="recettes-section">
-            <h2>Toutes les recettes</h2>
-            <div id="recettesList" class="loading">Chargement des recettes...</div>
+        <div class="container">
+            <!-- ADMIN PANEL -->
+            <div id="adminPanel" class="admin-panel hidden">
+                <h3>🔧 Panneau Administrateur</h3>
+                <div class="print-section">
+                    <input type="date" id="printDate">
+                    <button onclick="printByDate()">📄 Imprimer</button>
+                    <button onclick="exportData()">💾 Exporter CSV</button>
+                </div>
+                <p>Total recettes: <span id="recuCount">0</span> | Total montant: <span id="totalAmount">0</span> FCFA</p>
+            </div>
+
+            <!-- DASHBOARD -->
+            <div class="dashboard">
+                <!-- FORMULAIRE SAISIE -->
+                <div class="form-section">
+                    <h2>📝 Nouvelle saisie</h2>
+                    
+                    <div class="form-group">
+                        <label>Numéro du reçu *</label>
+                        <input type="text" id="numRecu" placeholder="Ex: 001">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nom du demandeur *</label>
+                        <div class="input-group">
+                            <input type="text" id="demandeur" placeholder="Tapez le nom">
+                        </div>
+                        <div id="demandeurSuggestions" class="suggestions"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nom du porteur du reçu *</label>
+                        <div class="input-group">
+                            <input type="text" id="porteur" placeholder="Tapez le nom">
+                        </div>
+                        <div id="porteurSuggestions" class="suggestions"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date d'émission *</label>
+                        <input type="date" id="dateEmission">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Montant (FCFA) *</label>
+                        <input type="number" id="montant" placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description (optionnel)</label>
+                        <input type="text" id="description" placeholder="Notes...">
+                    </div>
+
+                    <button onclick="saisirRecu()" style="margin-top: 20px;">✅ Enregistrer</button>
+
+                    <!-- STATS AGENT -->
+                    <div id="statsAgent" class="stats hidden" style="margin-top: 20px;">
+                        <h3>Vos statistiques</h3>
+                        <div class="amount" id="myTotal">0 FCFA</div>
+                        <p style="font-size: 0.9em;">Ristourne (15%): <strong id="myRistourne">0 FCFA</strong></p>
+                        <p style="font-size: 0.8em;">Recettes saisies: <span id="myCount">0</span></p>
+                    </div>
+                </div>
+
+                <!-- LISTE RECETTES -->
+                <div class="list-section">
+                    <h2>📋 Liste des recettes</h2>
+                    <div id="recusList"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
     <script>
-        // Configuration Firebase
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBstC-H43LX452HLYCJQGdAwnjZJGQLcz0",
             authDomain: "ccin-recettes.firebaseapp.com",
@@ -233,417 +457,313 @@
             appId: "1:6403324807099:web:e9e64684ab14adbe17702a"
         };
 
-        // Initialiser Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const recettesRef = db.collection("recettes");
 
-        // Écouter les modifications en temps réel
-        recettesRef.onSnapshot((snapshot) => {
-            afficherRecettes();
+        // State
+        let currentUser = null;
+        let currentRole = null;
+        let allRecus = [];
+        let demandeurs = [];
+        let porteurs = [];
+
+        // Offline Detection
+        window.addEventListener('online', () => {
+            document.getElementById('offlineIndicator').classList.remove('show');
+            syncData();
         });
 
-        // Ajouter une recette
-        document.getElementById("recetteForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
+        window.addEventListener('offline', () => {
+            document.getElementById('offlineIndicator').classList.add('show');
+        });
+
+        // Login
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            if (!username || !password) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            currentUser = username;
+            currentRole = role;
+
+            localStorage.setItem('user', JSON.stringify({ username, role }));
             
-            const nom = document.getElementById("nom").value;
-            const ingredients = document.getElementById("ingredients").value;
-            const instructions = document.getElementById("instructions").value;
-            const temps = document.getElementById("temps").value;
-            const errorDiv = document.getElementById("errorMessage");
-
-            try {
-                await recettesRef.add({
-                    nom: nom,
-                    ingredients: ingredients,
-                    instructions: instructions,
-                    temps: parseInt(temps),
-                    createdAt: new Date()
-                });
-                
-                // Réinitialiser le formulaire
-                document.getElementById("recetteForm").reset();
-                errorDiv.innerHTML = "";
-                console.log("Recette ajoutée avec succès !");
-            } catch (error) {
-                console.error("Erreur lors de l'ajout : ", error);
-                errorDiv.innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
-            }
-        });
-
-        // Afficher toutes les recettes
-        async function afficherRecettes() {
-            try {
-                const snapshot = await recettesRef.get();
-                const recettesList = document.getElementById("recettesList");
-                recettesList.innerHTML = "";
-
-                if (snapshot.empty) {
-                    recettesList.innerHTML = "<p style='text-align: center; color: #999;'>Aucune recette pour le moment...</p>";
-                    return;
-                }
-
-                snapshot.forEach((doc) => {
-                    const recette = doc.data();
-                    const div = document.createElement("div");
-                    div.className = "recette-card";
-                    div.innerHTML = `
-                        <h3>${recette.nom}</h3>
-                        <p><strong>⏱️ Temps :</strong> ${recette.temps} minutes</p>
-                        <p><strong>🥘 Ingrédients :</strong></p>
-                        <p>${recette.ingredients}</p>
-                        <p><strong>📝 Instructions :</strong></p>
-                        <p>${recette.instructions}</p>
-                        <button class="btn-delete" onclick="supprimerRecette('${doc.id}')">Supprimer</button>
-                    `;
-                    recettesList.appendChild(div);
-                });
-            } catch (error) {
-                console.error("Erreur lors du chargement : ", error);
-                document.getElementById("recettesList").innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
-            }
-        }
-
-        // Supprimer une recette
-        async function supprimerRecette(id) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer cette recette ?")) {
-                try {
-                    await recettesRef.doc(id).delete();
-                    console.log("Recette supprimée !");
-                } catch (error) {
-                    console.error("Erreur lors de la suppression : ", error);
-                    alert("Erreur : " + error.message);
-                }
-            }
-        }
-
-        // Afficher les recettes au chargement
-        afficherRecettes();
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCIN - Recettes</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        .form-section, .recettes-section {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-        }
-
-        h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 1.5em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        input, textarea {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1em;
-            font-family: inherit;
-            transition: 0.3s;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        button {
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1em;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        #recettesList {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        .recette-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 5px solid #667eea;
-            transition: 0.3s;
-        }
-
-        .recette-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-        }
-
-        .recette-card h3 {
-            color: #667eea;
-            margin-bottom: 12px;
-            font-size: 1.3em;
-        }
-
-        .recette-card p {
-            margin: 10px 0;
-            line-height: 1.6;
-            color: #555;
-        }
-
-        .recette-card strong {
-            color: #333;
-        }
-
-        .btn-delete {
-            background: #e74c3c;
-            padding: 8px 16px;
-            font-size: 0.9em;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .btn-delete:hover {
-            background: #c0392b;
-        }
-
-        #recettesList::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #recettesList::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        #recettesList::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-
-        #recettesList::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
-
-        .loading {
-            text-align: center;
-            color: #999;
-            font-style: italic;
-        }
-
-        .error {
-            background: #ffe0e0;
-            color: #c00;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid #c00;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .form-section, .recettes-section {
-                padding: 20px;
-            }
-
-            #recettesList {
-                max-height: none;
-            }
-        }
-    </style>
-</head>
-<body>
-    <h1>🍳 CCIN - Recettes</h1>
-    
-    <div class="container">
-        <div class="form-section">
-            <h2>Ajouter une recette</h2>
-            <div id="errorMessage"></div>
-            <form id="recetteForm">
-                <input type="text" id="nom" placeholder="Nom de la recette" required>
-                <textarea id="ingredients" placeholder="Ingrédients (séparés par des virgules)" required></textarea>
-                <textarea id="instructions" placeholder="Mode de préparation" required></textarea>
-                <input type="number" id="temps" placeholder="Temps de préparation (en minutes)" required>
-                <button type="submit">Ajouter la recette</button>
-            </form>
-        </div>
-
-        <div class="recettes-section">
-            <h2>Toutes les recettes</h2>
-            <div id="recettesList" class="loading">Chargement des recettes...</div>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-    <script>
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBstC-H43LX452HLYCJQGdAwnjZJGQLcz0",
-            authDomain: "ccin-recettes.firebaseapp.com",
-            projectId: "ccin-recettes",
-            storageBucket: "ccin-recettes.firebasestorage.app",
-            messagingSenderId: "6403324807099",
-            appId: "1:6403324807099:web:e9e64684ab14adbe17702a"
-        };
-
-        // Initialiser Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const recettesRef = db.collection("recettes");
-
-        // Écouter les modifications en temps réel
-        recettesRef.onSnapshot((snapshot) => {
-            afficherRecettes();
-        });
-
-        // Ajouter une recette
-        document.getElementById("recetteForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
             
-            const nom = document.getElementById("nom").value;
-            const ingredients = document.getElementById("ingredients").value;
-            const instructions = document.getElementById("instructions").value;
-            const temps = document.getElementById("temps").value;
-            const errorDiv = document.getElementById("errorMessage");
-
-            try {
-                await recettesRef.add({
-                    nom: nom,
-                    ingredients: ingredients,
-                    instructions: instructions,
-                    temps: parseInt(temps),
-                    createdAt: new Date()
-                });
-                
-                // Réinitialiser le formulaire
-                document.getElementById("recetteForm").reset();
-                errorDiv.innerHTML = "";
-                console.log("Recette ajoutée avec succès !");
-            } catch (error) {
-                console.error("Erreur lors de l'ajout : ", error);
-                errorDiv.innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
+            if (role === 'admin') {
+                document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('statsAgent').classList.add('hidden');
+            } else {
+                document.getElementById('statsAgent').classList.remove('hidden');
             }
+
+            loadDemandeurs();
+            loadPorteurs();
+            loadRecus();
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            currentRole = null;
+            localStorage.removeItem('user');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Saisie Recu
+        function saisirRecu() {
+            const numRecu = document.getElementById('numRecu').value;
+            const demandeur = document.getElementById('demandeur').value;
+            const porteur = document.getElementById('porteur').value;
+            const dateEmission = document.getElementById('dateEmission').value;
+            const montant = parseFloat(document.getElementById('montant').value);
+            const description = document.getElementById('description').value;
+
+            if (!numRecu || !demandeur || !porteur || !dateEmission || !montant) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            const doublon = allRecus.some(r => r.numRecu === numRecu && !r.deleted);
+            
+            const recu = {
+                id: Date.now().toString(),
+                numRecu,
+                demandeur,
+                porteur,
+                dateEmission,
+                montant,
+                description,
+                ristourne: montant * 0.15,
+                agent: currentUser,
+                dateCreation: new Date().toISOString(),
+                doublon: doublon,
+                deleted: false
+            };
+
+            const recusLocal = JSON.parse(localStorage.getItem('recus') || '[]');
+            recusLocal.push(recu);
+            localStorage.setItem('recus', JSON.stringify(recusLocal));
+
+            if (navigator.onLine) {
+                db.collection('recus').add(recu).catch(err => console.error('Erreur Firebase:', err));
+            }
+
+            allRecus.push(recu);
+            
+            document.getElementById('numRecu').value = '';
+            document.getElementById('demandeur').value = '';
+            document.getElementById('porteur').value = '';
+            document.getElementById('montant').value = '';
+            document.getElementById('description').value = '';
+
+            loadRecus();
+            alert(doublon ? '⚠️ Attention: Numéro en doublon!' : '✅ Reçu enregistré');
+        }
+
+        // Load
+        function loadDemandeurs() {
+            demandeurs = JSON.parse(localStorage.getItem('demandeurs') || '[]');
+        }
+
+        function loadPorteurs() {
+            porteurs = JSON.parse(localStorage.getItem('porteurs') || '[]');
+        }
+
+        function loadRecus() {
+            const recusLocal = JSON.parse(localStorage.getItem('recus') || '[]');
+            allRecus = recusLocal;
+
+            if (navigator.onLine) {
+                db.collection('recus').get().then(snapshot => {
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (!allRecus.find(r => r.id === data.id)) {
+                            allRecus.push(data);
+                        }
+                    });
+                    displayRecus();
+                }).catch(err => console.error('Erreur Firebase:', err));
+            } else {
+                displayRecus();
+            }
+        }
+
+        function displayRecus() {
+            const list = document.getElementById('recusList');
+            list.innerHTML = '';
+
+            let sorted = [...allRecus]
+                .filter(r => !r.deleted)
+                .sort((a, b) => parseInt(a.numRecu) - parseInt(b.numRecu));
+
+            if (currentRole === 'agent') {
+                sorted = sorted.filter(r => r.agent === currentUser);
+                updateStats(sorted);
+            } else if (currentRole === 'admin') {
+                updateAdminStats(sorted);
+            }
+
+            sorted.forEach(recu => {
+                const div = document.createElement('div');
+                div.className = 'recu-item' + (recu.doublon ? ' doublon' : '');
+                let html = `
+                    <h4>N° ${recu.numRecu}${recu.doublon ? ' <span class="doublon-badge">DOUBLON</span>' : ''}</h4>
+                    <p><strong>Demandeur:</strong> ${recu.demandeur}</p>
+                    <p><strong>Porteur:</strong> ${recu.porteur}</p>
+                    <p><strong>Date:</strong> ${recu.dateEmission}</p>
+                    <p><strong>Agent:</strong> ${recu.agent}</p>
+                    <p class="montant">💰 ${recu.montant.toLocaleString('fr-FR')} FCFA</p>
+                    <p class="ristourne">📊 Ristourne: ${recu.ristourne.toLocaleString('fr-FR', {maximumFractionDigits: 0})} FCFA</p>
+                `;
+
+                if (recu.description) {
+                    html += `<p><strong>Note:</strong> ${recu.description}</p>`;
+                }
+
+                if ((currentRole === 'admin' && recu.doublon) || (currentRole === 'agent' && recu.agent === currentUser)) {
+                    html += `
+                        <div class="actions">
+                            <button class="btn-delete" onclick="deleteRecu('${recu.id}')">🗑️ Supprimer</button>
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = html;
+                list.appendChild(div);
+            });
+
+            if (sorted.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999;">Aucune recette enregistrée</p>';
+            }
+        }
+
+        function updateStats(recus) {
+            const total = recus.reduce((sum, r) => sum + r.montant, 0);
+            const ristourne = recus.reduce((sum, r) => sum + r.ristourne, 0);
+
+            document.getElementById('myTotal').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+            document.getElementById('myRistourne').textContent = ristourne.toLocaleString('fr-FR', {maximumFractionDigits: 0}) + ' FCFA';
+            document.getElementById('myCount').textContent = recus.length;
+        }
+
+        function updateAdminStats(recus) {
+            const total = recus.reduce((sum, r) => sum + r.montant, 0);
+            document.getElementById('recuCount').textContent = recus.length;
+            document.getElementById('totalAmount').textContent = total.toLocaleString('fr-FR');
+        }
+
+        function deleteRecu(id) {
+            if (confirm('Êtes-vous sûr?')) {
+                allRecus = allRecus.map(r => r.id === id ? {...r, deleted: true} : r);
+                localStorage.setItem('recus', JSON.stringify(allRecus));
+                
+                if (navigator.onLine) {
+                    db.collection('recus').doc(id).update({deleted: true}).catch(err => console.error(err));
+                }
+                
+                loadRecus();
+            }
+        }
+
+        function syncData() {
+            loadRecus();
+            alert('✅ Données synchronisées');
+        }
+
+        function printByDate() {
+            window.print();
+        }
+
+        function exportData() {
+            const csv = 'Numéro,Demandeur,Porteur,Date,Agent,Montant,Ristourne\n';
+            const data = allRecus.filter(r => !r.deleted).map(r => 
+                `${r.numRecu},"${r.demandeur}","${r.porteur}",${r.dateEmission},${r.agent},${r.montant},${r.ristourne}`
+            ).join('\n');
+
+            const link = document.createElement('a');
+            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv + data);
+            link.download = 'recettes.csv';
+            link.click();
+        }
+
+        // Autocomplete
+        document.getElementById('demandeur').addEventListener('input', (e) => {
+            showSuggestions(e.target.value, demandeurs, 'demandeurSuggestions', 'demandeur');
         });
 
-        // Afficher toutes les recettes
-        async function afficherRecettes() {
-            try {
-                const snapshot = await recettesRef.get();
-                const recettesList = document.getElementById("recettesList");
-                recettesList.innerHTML = "";
+        document.getElementById('porteur').addEventListener('input', (e) => {
+            showSuggestions(e.target.value, porteurs, 'porteurSuggestions', 'porteur');
+        });
 
-                if (snapshot.empty) {
-                    recettesList.innerHTML = "<p style='text-align: center; color: #999;'>Aucune recette pour le moment...</p>";
-                    return;
-                }
+        function showSuggestions(val, list, elementId, inputId) {
+            const div = document.getElementById(elementId);
+            if (!val) {
+                div.classList.remove('show');
+                return;
+            }
 
-                snapshot.forEach((doc) => {
-                    const recette = doc.data();
-                    const div = document.createElement("div");
-                    div.className = "recette-card";
-                    div.innerHTML = `
-                        <h3>${recette.nom}</h3>
-                        <p><strong>⏱️ Temps :</strong> ${recette.temps} minutes</p>
-                        <p><strong>🥘 Ingrédients :</strong></p>
-                        <p>${recette.ingredients}</p>
-                        <p><strong>📝 Instructions :</strong></p>
-                        <p>${recette.instructions}</p>
-                        <button class="btn-delete" onclick="supprimerRecette('${doc.id}')">Supprimer</button>
-                    `;
-                    recettesList.appendChild(div);
-                });
-            } catch (error) {
-                console.error("Erreur lors du chargement : ", error);
-                document.getElementById("recettesList").innerHTML = <div class="error">❌ Erreur : ${error.message}</div>;
+            const filtered = list.filter(item => 
+                item.toLowerCase().includes(val.toLowerCase())
+            );
+
+            if (filtered.length > 0) {
+                div.innerHTML = filtered.map(item => 
+                    `<div class="suggestion-item" onclick="selectSuggestion('${item}', '${inputId}')">${item}</div>`
+                ).join('');
+                div.classList.add('show');
+            } else {
+                div.classList.remove('show');
             }
         }
 
-        // Supprimer une recette
-        async function supprimerRecette(id) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer cette recette ?")) {
-                try {
-                    await recettesRef.doc(id).delete();
-                    console.log("Recette supprimée !");
-                } catch (error) {
-                    console.error("Erreur lors de la suppression : ", error);
-                    alert("Erreur : " + error.message);
-                }
+        function selectSuggestion(value, inputId) {
+            document.getElementById(inputId).value = value;
+            document.getElementById(inputId + 'Suggestions').classList.remove('show');
+            
+            // Ajouter à la liste si nouveau
+            if (inputId === 'demandeur' && !demandeurs.includes(value)) {
+                demandeurs.push(value);
+                localStorage.setItem('demandeurs', JSON.stringify(demandeurs));
+            } else if (inputId === 'porteur' && !porteurs.includes(value)) {
+                porteurs.push(value);
+                localStorage.setItem('porteurs', JSON.stringify(porteurs));
             }
         }
 
-        // Afficher les recettes au chargement
-        afficherRecettes();
+        // Init
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+            const user = JSON.parse(savedUser);
+            currentUser = user.username;
+            currentRole = user.role;
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            
+            if (currentRole === 'admin') {
+                document.getElementById('adminPanel').classList.remove('hidden');
+            } else {
+                document.getElementById('statsAgent').classList.remove('hidden');
+            }
+
+            loadDemandeurs();
+            loadPorteurs();
+            loadRecus();
+        }
+
+        // Set today's date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dateEmission').value = today;
+        document.getElementById('printDate').value = today;
     </script>
 </body>
 </html>
