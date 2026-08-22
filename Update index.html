@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECETTES - CHAMBRE DE COMMERCE DU NIGER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1e3c72;
+            box-shadow: 0 0 8px rgba(30, 60, 114, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(30, 60, 114, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .form-section, .list-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .form-section h2,
+        .list-section h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #2a5298;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .suggestions {
+            background: #f5f5f5;
+            max-height: 150px;
+            overflow-y: auto;
+            border-radius: 5px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .suggestions.show {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .suggestion-item:hover {
+            background: #e0e0e0;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stats .amount {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .recu-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .recu-item.doublon {
+            border-left-color: #ff6b6b;
+            background: #ffe0e0;
+        }
+
+        .recu-item h4 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .recu-item p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        .recu-item .montant {
+            font-weight: bold;
+            color: #2a5298;
+            font-size: 1.1em;
+        }
+
+        .recu-item .ristourne {
+            color: #f5576c;
+            font-weight: bold;
+        }
+
+        .recu-item .doublon-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .actions button {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            flex: 1;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+        }
+
+        .btn-delete:hover {
+            background: #ff5252;
+        }
+
+        .btn-logout {
+            background: #ff9800;
+            padding: 10px 20px;
+            width: auto;
+            float: right;
+        }
+
+        .admin-panel {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .admin-panel h3 {
+            margin-bottom: 15px;
+        }
+
+        .print-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .print-section button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .form-section, .btn-logout, .print-section, .admin-panel {
+                display: none;
+            }
+        }
+
+        .success-msg {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .error-msg {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <div id="loginSection" class="login-container">
+        <h2>🏢 RECETTES</h2>
+        <h3 style="text-align: center; font-size: 0.9em; color: #666; margin-bottom: 30px;">
+            Chambre de Commerce du Niger
+        </h3>
+        <div class="form-group">
+            <label>Nom d'utilisateur</label>
+            <input type="text" id="username" placeholder="Votre nom">
+        </div>
+        <div class="form-group">
+            <label>Mot de passe</label>
+            <input type="password" id="password" placeholder="Mot de passe">
+        </div>
+        <div class="form-group">
+            <label>Rôle</label>
+            <select id="role">
+                <option value="agent">Agent de saisie</option>
+                <option value="admin">Administrateur</option>
+            </select>
+        </div>
+        <button onclick="login()">Se connecter</button>
+    </div>
+
+    <!-- APP -->
+    <div id="appSection" class="hidden">
+        <div class="header">
+            <h1>🏢 RECETTES - CHAMBRE DE COMMERCE DU NIGER</h1>
+            <p>Ristournes aux agents du MT/AC</p>
+            <button class="btn-logout" onclick="logout()">Déconnexion</button>
+        </div>
+
+        <div class="container">
+            <!-- ADMIN PANEL -->
+            <div id="adminPanel" class="admin-panel hidden">
+                <h3>🔧 Panneau Administrateur</h3>
+                <div class="print-section">
+                    <button onclick="exportData()">💾 Exporter CSV</button>
+                    <button onclick="printPage()">📄 Imprimer</button>
+                </div>
+                <p>Total recettes: <span id="recuCount">0</span> | Total montant: <span id="totalAmount">0</span> FCFA</p>
+            </div>
+
+            <!-- DASHBOARD -->
+            <div class="dashboard">
+                <!-- FORMULAIRE SAISIE -->
+                <div class="form-section">
+                    <h2>📝 Nouvelle saisie</h2>
+                    
+                    <div id="successMsg" class="hidden"></div>
+                    <div id="errorMsg" class="hidden"></div>
+                    
+                    <div class="form-group">
+                        <label>Numéro du reçu *</label>
+                        <input type="text" id="numRecu" placeholder="Ex: 001">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nom du demandeur *</label>
+                        <input type="text" id="demandeur" placeholder="Tapez le nom">
+                        <div id="demandeurSuggestions" class="suggestions"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nom du porteur du reçu *</label>
+                        <input type="text" id="porteur" placeholder="Tapez le nom">
+                        <div id="porteurSuggestions" class="suggestions"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date d'émission *</label>
+                        <input type="date" id="dateEmission">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Montant (FCFA) *</label>
+                        <input type="number" id="montant" placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description (optionnel)</label>
+                        <input type="text" id="description" placeholder="Notes...">
+                    </div>
+
+                    <button onclick="saisirRecu()" style="margin-top: 20px;">✅ Enregistrer</button>
+
+                    <!-- STATS AGENT -->
+                    <div id="statsAgent" class="stats hidden" style="margin-top: 20px;">
+                        <h3>Vos statistiques</h3>
+                        <div class="amount" id="myTotal">0 FCFA</div>
+                        <p style="font-size: 0.9em;">Ristourne (15%): <strong id="myRistourne">0 FCFA</strong></p>
+                        <p style="font-size: 0.8em;">Recettes saisies: <span id="myCount">0</span></p>
+                    </div>
+                </div>
+
+                <!-- LISTE RECETTES -->
+                <div class="list-section">
+                    <h2>📋 Liste des recettes</h2>
+                    <div id="recusList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentRole = null;
+        let allRecus = [];
+        let demandeurs = [];
+        let porteurs = [];
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            if (!username || !password) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            currentUser = username;
+            currentRole = role;
+
+            localStorage.setItem('user', JSON.stringify({ username, role }));
+            
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            
+            if (role === 'admin') {
+                document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('statsAgent').classList.add('hidden');
+            } else {
+                document.getElementById('statsAgent').classList.remove('hidden');
+            }
+
+            loadDemandeurs();
+            loadPorteurs();
+            loadRecus();
+            setTodayDate();
+        }
+
+        function logout() {
+            currentUser = null;
+            currentRole = null;
+            localStorage.removeItem('user');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function saisirRecu() {
+            const numRecu = document.getElementById('numRecu').value;
+            const demandeur = document.getElementById('demandeur').value;
+            const porteur = document.getElementById('porteur').value;
+            const dateEmission = document.getElementById('dateEmission').value;
+            const montant = parseFloat(document.getElementById('montant').value);
+            const description = document.getElementById('description').value;
+
+            if (!numRecu || !demandeur || !porteur || !dateEmission || !montant) {
+                showError('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            const doublon = allRecus.some(r => r.numRecu === numRecu && !r.deleted);
+            
+            const recu = {
+                id: Date.now().toString(),
+                numRecu,
+                demandeur,
+                porteur,
+                dateEmission,
+                montant,
+                description,
+                ristourne: montant * 0.15,
+                agent: currentUser,
+                dateCreation: new Date().toISOString(),
+                doublon: doublon,
+                deleted: false
+            };
+
+            const recusLocal = JSON.parse(localStorage.getItem('recus') || '[]');
+            recusLocal.push(recu);
+            localStorage.setItem('recus', JSON.stringify(recusLocal));
+
+            allRecus.push(recu);
+            
+            document.getElementById('numRecu').value = '';
+            document.getElementById('demandeur').value = '';
+            document.getElementById('porteur').value = '';
+            document.getElementById('montant').value = '';
+            document.getElementById('description').value = '';
+
+            loadRecus();
+            showSuccess(doublon ? '⚠️ Attention: Numéro en doublon!' : '✅ Reçu enregistré');
+        }
+
+        function loadDemandeurs() {
+            demandeurs = JSON.parse(localStorage.getItem('demandeurs') || '[]');
+        }
+
+        function loadPorteurs() {
+            porteurs = JSON.parse(localStorage.getItem('porteurs') || '[]');
+        }
+
+        function loadRecus() {
+            const recusLocal = JSON.parse(localStorage.getItem('recus') || '[]');
+            allRecus = recusLocal;
+            displayRecus();
+        }
+
+        function displayRecus() {
+            const list = document.getElementById('recusList');
+            list.innerHTML = '';
+
+            let sorted = [...allRecus]
+                .filter(r => !r.deleted)
+                .sort((a, b) => parseInt(a.numRecu) - parseInt(b.numRecu));
+
+            if (currentRole === 'agent') {
+                sorted = sorted.filter(r => r.agent === currentUser);
+                updateStats(sorted);
+            } else if (currentRole === 'admin') {
+                updateAdminStats(sorted);
+            }
+
+            sorted.forEach(recu => {
+                const div = document.createElement('div');
+                div.className = 'recu-item' + (recu.doublon ? ' doublon' : '');
+                let html = `
+                    <h4>N° ${recu.numRecu}${recu.doublon ? ' <span class="doublon-badge">DOUBLON</span>' : ''}</h4>
+                    <p><strong>Demandeur:</strong> ${recu.demandeur}</p>
+                    <p><strong>Porteur:</strong> ${recu.porteur}</p>
+                    <p><strong>Date:</strong> ${recu.dateEmission}</p>
+                    <p><strong>Agent:</strong> ${recu.agent}</p>
+                    <p class="montant">💰 ${recu.montant.toLocaleString('fr-FR')} FCFA</p>
+                    <p class="ristourne">📊 Ristourne: ${recu.ristourne.toLocaleString('fr-FR', {maximumFractionDigits: 0})} FCFA</p>
+                `;
+
+                if (recu.description) {
+                    html += <p><strong>Note:</strong> ${recu.description}</p>;
+                }
+
+                if ((currentRole === 'admin' && recu.doublon) || (currentRole === 'agent' && recu.agent === currentUser)) {
+                    html += `
+                        <div class="actions">
+                            <button class="btn-delete" onclick="deleteRecu('${recu.id}')">🗑️ Supprimer</button>
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = html;
+                list.appendChild(div);
+            });
+
+            if (sorted.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999;">Aucune recette enregistrée</p>';
+            }
+        }
+
+        function updateStats(recus) {
+            const total = recus.reduce((sum, r) => sum + r.montant, 0);
+            const ristourne = recus.reduce((sum, r) => sum + r.ristourne, 0);
+
+            document.getElementById('myTotal').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+            document.getElementById('myRistourne').textContent = ristourne.toLocaleString('fr-FR', {maximumFractionDigits: 0}) + ' FCFA';
+            document.getElementById('myCount').textContent = recus.length;
+        }
+
+        function updateAdminStats(recus) {
+            const total = recus.reduce((sum, r) => sum + r.montant, 0);
+            document.getElementById('recuCount').textContent = recus.length;
+            document.getElementById('totalAmount').textContent = total.toLocaleString('fr-FR');
+        }
+
+        function deleteRecu(id) {
+            if (confirm('Êtes-vous sûr?')) {
+                allRecus = allRecus.map(r => r.id === id ? {...r, deleted: true} : r);
+                localStorage.setItem('recus', JSON.stringify(allRecus));
+                loadRecus();
+                showSuccess('✅ Reçu supprimé');
+            }
+        }
+
+        function exportData() {
+            const csv = 'Numéro,Demandeur,Porteur,Date,Agent,Montant,Ristourne\n';
+            const data = allRecus.filter(r => !r.deleted).map(r => 
+                ${r.numRecu},"${r.demandeur}","${r.porteur}",${r.dateEmission},${r.agent},${r.montant},${r.ristourne}
+            ).join('\n');
+
+            const link = document.createElement('a');
+            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv + data);
+            link.download = 'recettes.csv';
+            link.click();
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateEmission').value = today;
+        }
+
+        document.getElementById('demandeur').addEventListener('input', (e) => {
+            showSuggestions(e.target.value, demandeurs, 'demandeurSuggestions', 'demandeur');
+        });
+
+        document.getElementById('porteur').addEventListener('input', (e) => {
